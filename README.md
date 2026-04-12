@@ -103,9 +103,11 @@ HTTP dan MQTT memakai format JSON yang sama:
 }
 ```
 
-## Bukti Laporan
+## Laporan
 
-Gunakan template di `report/LAPORAN_TEMPLATE.md`. Screenshot yang perlu dikumpulkan:
+Gunakan laporan siap pakai di `report/LAPORAN.md`. Template cadangan tetap ada di `report/LAPORAN_TEMPLATE.md`.
+
+Screenshot yang perlu dikumpulkan:
 
 - Foto/diagram rangkaian ESP32 dengan sensor infrared.
 - Serial Monitor ESP32 saat mengirim via HTTP dan MQTT.
