@@ -1,4 +1,5 @@
 .venv/
+.codex
 __pycache__/
 *.pyc
 data/
@@ -7,3 +8,4 @@ run/
 mosquitto-data/
 .pio/
 .vscode/
+firmware/esp32_ir_http_mqtt/src/config.h

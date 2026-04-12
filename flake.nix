@@ -18,6 +18,8 @@
           pkgs.mosquitto
           pkgs.curl
           pkgs.jq
+          pkgs.platformio
+          pkgs.esptool
         ];
       };
     };

@@ -25,7 +25,8 @@ Sensor infrared pada program ini dibaca sebagai sensor digital. Jika sensor mend
 
 Kode yang digunakan dalam projek:
 
-- Firmware ESP32: `firmware/esp32_ir_http_mqtt/esp32_ir_http_mqtt.ino`
+- Firmware ESP32: `firmware/esp32_ir_http_mqtt/src/esp32_ir_http_mqtt.cpp`
+- Contoh konfigurasi ESP32: `firmware/esp32_ir_http_mqtt/src/config.example.h`
 - HTTP Server Flask: `server/http_server.py`
 - MQTT Subscriber Python: `server/mqtt_subscriber.py`
 - MQTT Broker config: `server/mosquitto.conf`
@@ -121,31 +122,35 @@ Field yang digunakan:
 - `wifi_rssi`: kekuatan sinyal WiFi ESP32.
 - `uptime_ms`: lama waktu ESP32 menyala dalam milidetik.
 
-Contoh data HTTP yang berhasil diterima server laptop saat pengujian lokal:
+Contoh data HTTP yang berhasil diterima server laptop dari ESP32:
 
 ```json
 {
   "device_id": "esp32-ir-01",
   "sensor": "infrared",
-  "ir_detected": true,
-  "ir_value": 0,
-  "detection_count": 1,
-  "sequence": 1,
-  "protocol": "http"
+  "ir_detected": false,
+  "ir_value": 1,
+  "detection_count": 0,
+  "sequence": 44,
+  "protocol": "http",
+  "wifi_rssi": -65,
+  "uptime_ms": 265305
 }
 ```
 
-Contoh data MQTT yang berhasil diterima subscriber laptop saat pengujian lokal:
+Contoh data MQTT yang berhasil diterima subscriber laptop dari ESP32:
 
 ```json
 {
   "device_id": "esp32-ir-01",
   "sensor": "infrared",
-  "ir_detected": true,
-  "ir_value": 0,
-  "detection_count": 2,
-  "sequence": 2,
-  "protocol": "mqtt"
+  "ir_detected": false,
+  "ir_value": 1,
+  "detection_count": 0,
+  "sequence": 45,
+  "protocol": "mqtt",
+  "wifi_rssi": -73,
+  "uptime_ms": 270305
 }
 ```
 
@@ -185,14 +190,14 @@ tail -f data/http_sensor_data.jsonl
 tail -f data/mqtt_sensor_data.jsonl
 ```
 
-Contoh bukti dari pengujian lokal di laptop:
+Contoh bukti dari pengujian ESP32 ke laptop:
 
 ```text
 HTTP log:
-{"received_at": "2026-04-12T04:55:34.531076+00:00", "protocol": "http", "remote_addr": "127.0.0.1", "data": {"device_id": "esp32-ir-01", "sensor": "infrared", "ir_detected": true, "ir_value": 0, "detection_count": 1, "sequence": 1, "protocol": "http"}}
+{"received_at": "2026-04-12T13:42:07.769864+00:00", "protocol": "http", "remote_addr": "10.106.114.97", "data": {"device_id": "esp32-ir-01", "sensor": "infrared", "ir_detected": false, "ir_value": 1, "detection_count": 0, "sequence": 44, "protocol": "http", "wifi_rssi": -65, "uptime_ms": 265305}}
 
 MQTT log:
-{"received_at": "2026-04-12T04:55:34.543569+00:00", "protocol": "mqtt", "topic": "iot/sensor/esp32-ir-01", "qos": 0, "retain": false, "data": {"device_id": "esp32-ir-01", "sensor": "infrared", "ir_detected": true, "ir_value": 0, "detection_count": 2, "sequence": 2, "protocol": "mqtt"}}
+{"received_at": "2026-04-12T13:42:12.818219+00:00", "protocol": "mqtt", "topic": "iot/sensor/esp32-ir-01", "qos": 0, "retain": false, "data": {"device_id": "esp32-ir-01", "sensor": "infrared", "ir_detected": false, "ir_value": 1, "detection_count": 0, "sequence": 45, "protocol": "mqtt", "wifi_rssi": -73, "uptime_ms": 270305}}
 ```
 
 ## 5. Demo dan Presentasi

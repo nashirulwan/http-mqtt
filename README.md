@@ -70,7 +70,13 @@ Stop service:
 
 ## Konfigurasi ESP32
 
-Edit file `firmware/esp32_ir_http_mqtt/esp32_ir_http_mqtt.ino`:
+Salin contoh konfigurasi lokal, lalu edit sesuai WiFi dan IP laptop:
+
+```bash
+cp firmware/esp32_ir_http_mqtt/src/config.example.h firmware/esp32_ir_http_mqtt/src/config.h
+```
+
+Edit file `firmware/esp32_ir_http_mqtt/src/config.h`:
 
 ```cpp
 const char* WIFI_SSID = "NamaWiFi";
@@ -78,6 +84,8 @@ const char* WIFI_PASSWORD = "PasswordWiFi";
 const char* HTTP_SERVER_URL = "http://IP-LAPTOP:8000/sensor";
 const char* MQTT_BROKER_HOST = "IP-LAPTOP";
 ```
+
+File `config.h` tidak ikut di-commit supaya SSID dan password WiFi lokal tidak masuk ke GitHub.
 
 Cari IP laptop:
 

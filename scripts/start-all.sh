@@ -19,14 +19,21 @@ done
 
 cd "$ROOT_DIR"
 
-mosquitto -c "$ROOT_DIR/server/mosquitto.conf" >"$LOG_DIR/mosquitto.log" 2>&1 &
-echo $! >"$RUN_DIR/mosquitto.pid"
+start_background() {
+  local name="$1"
+  local log_file="$2"
+  shift 2
 
-python "$ROOT_DIR/server/http_server.py" >"$LOG_DIR/http.log" 2>&1 &
-echo $! >"$RUN_DIR/http.pid"
+  setsid nohup "$@" >"$log_file" 2>&1 </dev/null &
+  echo $! >"$RUN_DIR/$name.pid"
+}
 
-python "$ROOT_DIR/server/mqtt_subscriber.py" >"$LOG_DIR/mqtt-subscriber.log" 2>&1 &
-echo $! >"$RUN_DIR/mqtt-subscriber.pid"
+start_background mosquitto "$LOG_DIR/mosquitto.log" \
+  mosquitto -c "$ROOT_DIR/server/mosquitto.conf"
+start_background http "$LOG_DIR/http.log" \
+  python "$ROOT_DIR/server/http_server.py"
+start_background mqtt-subscriber "$LOG_DIR/mqtt-subscriber.log" \
+  python "$ROOT_DIR/server/mqtt_subscriber.py"
 
 sleep 2
 
