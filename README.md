@@ -1,29 +1,30 @@
-# Komparasi MQTT vs HTTP pada Sistem IoT
+# MQTT vs HTTP on IoT
 
-Proyek ini berisi contoh lengkap untuk tugas komparasi protokol MQTT dan HTTP pada sistem IoT dengan ESP32 dan sensor infrared.
+A small hands-on project that compares MQTT and HTTP for sending sensor data from an ESP32 to a laptop. The ESP32 reads an infrared obstacle sensor and ships the same JSON payload over both protocols so you can see how they behave side by side.
 
-## Arsitektur
+## Architecture
 
 ```text
-ESP32 + Sensor Infrared
-  |-- HTTP POST JSON --> Laptop Flask Server --> data/http_sensor_data.jsonl
+ESP32 + Infrared Sensor
+  |-- HTTP POST JSON --> Flask Server on laptop --> data/http_sensor_data.jsonl
   |
-  `-- MQTT Publish JSON -> Mosquitto Broker -> Python Subscriber -> data/mqtt_sensor_data.jsonl
+  `-- MQTT Publish JSON -> Mosquitto Broker -> Python subscriber -> data/mqtt_sensor_data.jsonl
 ```
 
-## Struktur Repo
+## Repo Structure
 
 ```text
-firmware/esp32_ir_http_mqtt/  Kode ESP32 untuk sensor infrared
-server/                       HTTP server, MQTT subscriber, config Mosquitto
-scripts/                      Script start, stop, dan test lokal
-report/                       Template laporan
-requirements.txt              Dependency Python
+firmware/esp32_ir_http_mqtt/  ESP32 code for the infrared sensor
+server/                       HTTP server, MQTT subscriber, Mosquitto config
+scripts/                      start, stop, and local test scripts
+report/                       report template and write-up
+requirements.txt              Python dependencies
+flake.nix                     Nix dev shell with everything you need
 ```
 
-## Rangkaian Sensor Infrared
+## Hardware Setup
 
-Contoh untuk modul infrared obstacle sensor 3 pin:
+This uses a 3-pin infrared obstacle sensor module:
 
 ```text
 IR Sensor VCC  -> 3V3 ESP32
@@ -31,73 +32,80 @@ IR Sensor GND  -> GND ESP32
 IR Sensor OUT  -> GPIO 4 ESP32
 ```
 
-Jika modul sensor infrared memakai output aktif LOW, kode bawaan sudah menganggap objek terdeteksi saat pin `OUT` bernilai `LOW`.
+A lot of these modules are active LOW, meaning `OUT` goes LOW when something is in front of the sensor. The firmware already treats LOW as "object detected", so you don't need to flip anything.
 
-## Jalankan Server Laptop
+## Run Locally
 
-Install dependency Python:
+You need Python and Mosquitto. Pick whichever setup fits your machine.
+
+### With plain Python
 
 ```bash
-cd /home/nashiru/http-mqtt
+git clone https://github.com/nashirulwan/http-mqtt.git
+cd http-mqtt
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Jika memakai Nix/NixOS, cukup jalankan:
+### With Nix
+
+If you're on Nix or NixOS, the flake gives you Python, Mosquitto, PlatformIO, and the rest in one shell:
 
 ```bash
 nix --extra-experimental-features nix-command --extra-experimental-features flakes develop
 ```
 
-Jalankan semua service:
+### Start, test, stop
+
+Bring up the HTTP server, Mosquitto broker, and MQTT subscriber:
 
 ```bash
 ./scripts/start-all.sh
 ```
 
-Tes lokal dari laptop:
+Fire a couple of test payloads from the laptop without touching the ESP32:
 
 ```bash
 ./scripts/test-local.sh
 ```
 
-Stop service:
+Shut everything down:
 
 ```bash
 ./scripts/stop-all.sh
 ```
 
-## Konfigurasi ESP32
+## Configure the ESP32
 
-Salin contoh konfigurasi lokal, lalu edit sesuai WiFi dan IP laptop:
+Copy the example config and edit it with your WiFi and the laptop's IP:
 
 ```bash
 cp firmware/esp32_ir_http_mqtt/src/config.example.h firmware/esp32_ir_http_mqtt/src/config.h
 ```
 
-Edit file `firmware/esp32_ir_http_mqtt/src/config.h`:
+Then edit `firmware/esp32_ir_http_mqtt/src/config.h`:
 
 ```cpp
-const char* WIFI_SSID = "NamaWiFi";
-const char* WIFI_PASSWORD = "PasswordWiFi";
-const char* HTTP_SERVER_URL = "http://IP-LAPTOP:8000/sensor";
-const char* MQTT_BROKER_HOST = "IP-LAPTOP";
+const char* WIFI_SSID = "YourWiFi";
+const char* WIFI_PASSWORD = "YourWiFiPassword";
+const char* HTTP_SERVER_URL = "http://LAPTOP-IP:8000/sensor";
+const char* MQTT_BROKER_HOST = "LAPTOP-IP";
 ```
 
-File `config.h` tidak ikut di-commit supaya SSID dan password WiFi lokal tidak masuk ke GitHub.
+`config.h` is gitignored so your WiFi credentials never end up on GitHub.
 
-Cari IP laptop:
+Find the laptop's IP with:
 
 ```bash
 ip addr
 ```
 
-Gunakan IP yang satu jaringan dengan ESP32. Jangan gunakan `127.0.0.1` di ESP32 karena itu berarti alamat ESP32 sendiri, bukan laptop.
+Use the IP that's on the same network as the ESP32. Don't use `127.0.0.1` on the ESP32, since that points back at the ESP32 itself, not your laptop.
 
-## Data JSON
+## JSON Payload
 
-HTTP dan MQTT memakai format JSON yang sama:
+HTTP and MQTT send the exact same JSON shape:
 
 ```json
 {
@@ -111,14 +119,18 @@ HTTP dan MQTT memakai format JSON yang sama:
 }
 ```
 
-## Laporan
+## Report
 
-Gunakan laporan siap pakai di `report/LAPORAN.md`. Template cadangan tetap ada di `report/LAPORAN_TEMPLATE.md`.
+There's a ready-to-use write-up in `report/LAPORAN.md`, with a blank template at `report/LAPORAN_TEMPLATE.md`.
 
-Screenshot yang perlu dikumpulkan:
+Things worth capturing if you're documenting a run:
 
-- Foto/diagram rangkaian ESP32 dengan sensor infrared.
-- Serial Monitor ESP32 saat mengirim via HTTP dan MQTT.
-- Log HTTP server dari `data/http_sensor_data.jsonl`.
-- Log MQTT subscriber dari `data/mqtt_sensor_data.jsonl`.
-- Terminal saat `./scripts/test-local.sh` berhasil.
+- A photo or diagram of the ESP32 wiring with the infrared sensor.
+- The ESP32 serial monitor while it sends over HTTP and MQTT.
+- The HTTP server log at `data/http_sensor_data.jsonl`.
+- The MQTT subscriber log at `data/mqtt_sensor_data.jsonl`.
+- The terminal output of a successful `./scripts/test-local.sh`.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

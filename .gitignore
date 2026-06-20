@@ -1,11 +1,35 @@
+# Python
 .venv/
-.codex
+venv/
+env/
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+
+# Editors / tooling
+.codex
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Runtime data and logs
 data/
 logs/
 run/
 mosquitto-data/
+
+# PlatformIO / ESP32
 .pio/
-.vscode/
+.pioenvs/
+.piolibdeps/
+
+# Local secrets (WiFi creds, broker host)
 firmware/esp32_ir_http_mqtt/src/config.h
