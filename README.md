@@ -1,6 +1,6 @@
 # MQTT vs HTTP on IoT
 
-A small hands-on project that compares MQTT and HTTP for sending sensor data from an ESP32 to a laptop. The ESP32 reads an infrared obstacle sensor and ships the same JSON payload over both protocols so you can see how they behave side by side.
+A course assignment for IoT data communication: comparing MQTT and HTTP for sending sensor data from an ESP32 to a laptop. The ESP32 reads an infrared obstacle sensor and ships the same JSON payload over both protocols so you can see how they behave side by side.
 
 ## Architecture
 
@@ -17,7 +17,7 @@ ESP32 + Infrared Sensor
 firmware/esp32_ir_http_mqtt/  ESP32 code for the infrared sensor
 server/                       HTTP server, MQTT subscriber, Mosquitto config
 scripts/                      start, stop, and local test scripts
-report/                       report template and write-up
+report/                       report write-up
 requirements.txt              Python dependencies
 flake.nix                     Nix dev shell with everything you need
 ```
@@ -121,7 +121,7 @@ HTTP and MQTT send the exact same JSON shape:
 
 ## Report
 
-There's a ready-to-use write-up in `report/LAPORAN.md`, with a blank template at `report/LAPORAN_TEMPLATE.md`.
+There's a ready-to-use write-up in `report/LAPORAN.md`.
 
 Things worth capturing if you're documenting a run:
 
@@ -130,7 +130,3 @@ Things worth capturing if you're documenting a run:
 - The HTTP server log at `data/http_sensor_data.jsonl`.
 - The MQTT subscriber log at `data/mqtt_sensor_data.jsonl`.
 - The terminal output of a successful `./scripts/test-local.sh`.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
