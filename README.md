@@ -1,8 +1,8 @@
-# MQTT vs HTTP on IoT
+### MQTT vs HTTP on IoT
 
 A course assignment for IoT data communication: comparing MQTT and HTTP for sending sensor data from an ESP32 to a laptop. The ESP32 reads an infrared obstacle sensor and ships the same JSON payload over both protocols so you can see how they behave side by side.
 
-## Architecture
+#### Architecture
 
 ```text
 ESP32 + Infrared Sensor
@@ -11,7 +11,7 @@ ESP32 + Infrared Sensor
   `-- MQTT Publish JSON -> Mosquitto Broker -> Python subscriber -> data/mqtt_sensor_data.jsonl
 ```
 
-## Repo Structure
+#### Repo Structure
 
 ```text
 firmware/esp32_ir_http_mqtt/  ESP32 code for the infrared sensor
@@ -22,7 +22,7 @@ requirements.txt              Python dependencies
 flake.nix                     Nix dev shell with everything you need
 ```
 
-## Hardware Setup
+#### Hardware Setup
 
 This uses a 3-pin infrared obstacle sensor module:
 
@@ -34,11 +34,11 @@ IR Sensor OUT  -> GPIO 4 ESP32
 
 A lot of these modules are active LOW, meaning `OUT` goes LOW when something is in front of the sensor. The firmware already treats LOW as "object detected", so you don't need to flip anything.
 
-## Run Locally
+#### Run Locally
 
 You need Python and Mosquitto. Pick whichever setup fits your machine.
 
-### With plain Python
+##### With plain Python
 
 ```bash
 git clone https://github.com/nashirulwan/http-mqtt.git
@@ -48,7 +48,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### With Nix
+##### With Nix
 
 If you're on Nix or NixOS, the flake gives you Python, Mosquitto, PlatformIO, and the rest in one shell:
 
@@ -56,7 +56,7 @@ If you're on Nix or NixOS, the flake gives you Python, Mosquitto, PlatformIO, an
 nix --extra-experimental-features nix-command --extra-experimental-features flakes develop
 ```
 
-### Start, test, stop
+##### Start, test, stop
 
 Bring up the HTTP server, Mosquitto broker, and MQTT subscriber:
 
@@ -76,7 +76,7 @@ Shut everything down:
 ./scripts/stop-all.sh
 ```
 
-## Configure the ESP32
+#### Configure the ESP32
 
 Copy the example config and edit it with your WiFi and the laptop's IP:
 
@@ -103,7 +103,7 @@ ip addr
 
 Use the IP that's on the same network as the ESP32. Don't use `127.0.0.1` on the ESP32, since that points back at the ESP32 itself, not your laptop.
 
-## JSON Payload
+#### JSON Payload
 
 HTTP and MQTT send the exact same JSON shape:
 
@@ -119,7 +119,7 @@ HTTP and MQTT send the exact same JSON shape:
 }
 ```
 
-## Report
+#### Report
 
 There's a ready-to-use write-up in `report/LAPORAN.md`.
 
